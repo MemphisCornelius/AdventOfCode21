@@ -7,7 +7,7 @@ namespace Day08 {
     internal static class Day08 {
         public static void Main(string[] args) {
             List<string> values = new();
-            StreamReader sr = new("../../../input.txt");
+            StreamReader sr = new("../../../test.txt");
 
             while (!sr.EndOfStream) {
                 values.Add(sr.ReadLine()!);
