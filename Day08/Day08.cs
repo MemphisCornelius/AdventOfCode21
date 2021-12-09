@@ -7,7 +7,7 @@ namespace Day08 {
     internal static class Day08 {
         public static void Main(string[] args) {
             List<string> values = new();
-            StreamReader sr = new("../../../testinput2.txt");
+            StreamReader sr = new("../../../input.txt");
 
             while (!sr.EndOfStream) {
                 values.Add(sr.ReadLine()!);
@@ -51,7 +51,7 @@ namespace Day08 {
 
             return counter.ToString();
         }
-        
+
         //does not work and i dont know why
         private static string Solve02(Dictionary<List<string>, List<string>> values) {
             int sum = 0;
@@ -63,20 +63,18 @@ namespace Day08 {
 
                 keyValuePair.Value.ForEach(s => listSorted.Add(SortString(s)));
 
-                int multi = 1000;
 
-                for (int i = 0; i < keyValuePair.Value.Count; i++) {
-                    foreach (string s in listSorted) {
-                        sum += multi * sevenSegmentToDecimal[s];
-                        multi /= 10;
-                    }
+                string number = "";
+                foreach (string s in listSorted) {
+                    number += sevenSegmentToDecimal[s];
                 }
+
+                sum += int.Parse(number);
             }
 
             return sum.ToString();
         }
         
-        //does not detect if it is a 2, 5 or 6
         private static Dictionary<string, int> SevenSegmentToDecimal(List<string> displays) {
             Dictionary<string, int> map = new();
 
@@ -114,7 +112,7 @@ namespace Day08 {
                         displays.Remove(s);
                         i--;
                         break;
-                    case (6, 5):
+                    case (5, 5):
                         map.Add(s, 2);
                         displays.Remove(s);
                         i--;
@@ -124,12 +122,12 @@ namespace Day08 {
                         displays.Remove(s);
                         i--;
                         break;
-                    case (6, 3):
+                    case (5, 3):
                         map.Add(s, 5);
                         displays.Remove(s);
                         i--;
                         break;
-                    case (7, 4):
+                    case (6, 4):
                         map.Add(s, 6);
                         displays.Remove(s);
                         i--;
@@ -144,24 +142,19 @@ namespace Day08 {
 
             Dictionary<string, int> mapSorted = new();
 
-            foreach (KeyValuePair<string,int> keyValuePair in map) {
+            foreach (KeyValuePair<string, int> keyValuePair in map) {
                 mapSorted.Add(SortString(keyValuePair.Key), keyValuePair.Value);
             }
-            
+
             return mapSorted;
         }
 
         static string Difference(string a, string b) {
             string difference = "";
+            string lamps = "abcdefg";
 
-            foreach (char c in a) {
-                if (!b.Contains(c)) {
-                    difference += c;
-                }
-            }
-
-            foreach (char c in b) {
-                if (!a.Contains(c) && !difference.Contains(c)) {
+            foreach (char c in lamps) {
+                if (a.Contains(c) != b.Contains(c)) {
                     difference += c;
                 }
             }
@@ -180,10 +173,10 @@ namespace Day08 {
 
             return key;
         }
-        
+
         private static string SortString(string s) {
             string output = "";
-            for (int i = 'a'; i <= 'f'; i++) {
+            for (int i = 'a'; i <= 'g'; i++) {
                 if (s.Contains((char)i)) {
                     output += (char)i;
                 }
