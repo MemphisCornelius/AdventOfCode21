@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.IO;
-
-namespace Day13 {
+﻿namespace Day13 {
     static class Day13 {
         public static void Main(string[] args) {
             List<string> values = new();
@@ -40,11 +35,7 @@ namespace Day13 {
 
             for (int i = 0; i < array.GetLength(0); i++) {
                 for (int j = 0; j < array.GetLength(1); j++) {
-                    if (array[i, j]) {
-                        Console.Write('#');
-                    } else {
-                        Console.Write(' ');
-                    }
+                    Console.Write(array[i, j] ? '\u2588' : ' ');
                 }
 
                 Console.WriteLine("");
