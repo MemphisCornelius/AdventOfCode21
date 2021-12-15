@@ -1,7 +1,8 @@
-﻿using System.Drawing;
+﻿using System.Diagnostics;
+using System.Drawing;
 
-namespace Day14 {
-    static class Day14 {
+namespace Day15 {
+    static class Day15 {
         public static void Main(string[] args) {
             List<string> values = new();
             StreamReader sr = new("../../../input.txt");
@@ -14,14 +15,24 @@ namespace Day14 {
 
             ParseInput(values, out Dictionary<Point, Dictionary<Point, int>> graph);
 
-            Console.WriteLine($"Aufgabe01: {Solve01(graph)}");
+            Stopwatch sw = new();
+            sw.Start();
+            string a1 = Solve01(graph);
+            sw.Stop();
+            Console.WriteLine($"Aufgabe01: {a1} in {sw.ElapsedMilliseconds}ms");
 
-            //Console.WriteLine($"Aufgabe02: {Solve02()}");
+            sw.Reset();
+            sw.Start();
+            string a2 = Solve02(graph);
+            sw.Stop();
+            Console.WriteLine($"Aufgabe02: {a2} in {sw.ElapsedMilliseconds}ms");
         }
 
         private static void ParseInput(List<string> values, out Dictionary<Point, Dictionary<Point, int>> graph) {
-            int[,] map = new int[100, 100];
+            int[,] map = new int[values[0].Length, values.Count];
+            int[,] biggerMap = new int[map.GetLength(0) * 5, map.GetLength(1) * 5];
             graph = new();
+            
 
             for (int i = 0; i < map.GetLength(0); i++) {
                 char[] m = values[i].ToCharArray();
@@ -32,22 +43,35 @@ namespace Day14 {
 
             for (int i = 0; i < map.GetLength(0); i++) {
                 for (int j = 0; j < map.GetLength(1); j++) {
+                    for (int k = 0; k < 5; k++) {
+                        for (int l = 0; l < 5; l++) {
+                            int value = map[i, j] + k + l;
+                            value -= value >= 10 ? 9 : 0;
+                            biggerMap[i + k * values[0].Length, j + l * values.Count] = value;
+                        }
+                    }
+                }
+            }
+
+
+            for (int i = 0; i < biggerMap.GetLength(0); i++) {
+                for (int j = 0; j < biggerMap.GetLength(1); j++) {
                     Dictionary<Point, int> follow = new();
 
                     if (i != 0) {
-                        follow.Add(new Point(i - 1, j), map[i - 1, j]);
+                        follow.Add(new Point(i - 1, j), biggerMap[i - 1, j]);
                     }
 
                     if (j != 0) {
-                        follow.Add(new Point(i, j - 1), map[i, j - 1]);
+                        follow.Add(new Point(i, j - 1), biggerMap[i, j - 1]);
                     }
 
-                    if (i != map.GetLength(0) - 1) {
-                        follow.Add(new Point(i + 1, j), map[i + 1, j]);
+                    if (i != biggerMap.GetLength(0) - 1) {
+                        follow.Add(new Point(i + 1, j), biggerMap[i + 1, j]);
                     }
 
-                    if (j != map.GetLength(1) - 1) {
-                        follow.Add(new Point(i, j + 1), map[i, j + 1]);
+                    if (j != biggerMap.GetLength(1) - 1) {
+                        follow.Add(new Point(i, j + 1), biggerMap[i, j + 1]);
                     }
 
                     graph.Add(new Point(i, j), follow);
@@ -56,7 +80,12 @@ namespace Day14 {
         }
 
         private static string Solve01(Dictionary<Point, Dictionary<Point, int>> graph) {
+            
             return Dijkstra(graph, 99, 99).ToString();
+        }
+        
+        private static string Solve02(Dictionary<Point, Dictionary<Point, int>> graph) {
+            return Dijkstra(graph, 499, 499).ToString();
         }
 
         static int Dijkstra(Dictionary<Point, Dictionary<Point, int>> graph, int endX, int endY) {
